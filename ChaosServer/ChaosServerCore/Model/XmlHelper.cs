@@ -4,9 +4,9 @@ using System.Xml.Serialization;
 
 namespace ChaosServerCore.Model
 {
-    internal class XmlHelper
+    public class XmlHelper
     {
-        internal static string Serialize<T>(T item)
+        public static string Serialize<T>(T item)
         {
             string result;
             var serializer = new XmlSerializer(typeof(T));
@@ -21,7 +21,7 @@ namespace ChaosServerCore.Model
             return result;
         }
 
-        internal static T Deserialize<T>(string serializedItem)
+        public static T Deserialize<T>(string serializedItem)
         {
             T item;
             var serializer = new XmlSerializer(typeof(T));

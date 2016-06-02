@@ -1,6 +1,6 @@
-﻿using ChaosServerCore.Model;
+﻿using ChaosServerCore;
+using ChaosServerCore.Model;
 using System;
-using System.ComponentModel;
 
 namespace ChaosServer
 {
@@ -8,42 +8,19 @@ namespace ChaosServer
     {
         static void Main(string[] args)
         {
-            IRepository<Parameters, string> parametersRepository = new ParametersRepository("");
-            var parametersValue = new RandomNumberHandler();
-            parametersRepository.AddItem(new Parameters {A=7, B = 9, C0 = 8, Lambda = parametersValue.GenerateLambdaRandomNumber(3.4, 4), T = 9, X = parametersValue.GenerateXRandomNumber(0, 1)});
-            parametersRepository.GetAll();            
-            try
-            {
-                parametersRepository.GetItem("2");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
 
-            try
+            var request = new Request
             {
-                parametersRepository.UpdateItem("0", new Parameters {A = 12, B = 10, C0 = 9, Lambda = 5, T = 4, X = 66});
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+                Id = "1",
+                Image = "Blabla",
+                Parameters = new Parameters(),
+                Sender = new Sender { Id = "1", Name = "Maria" },
+                Receiver = new Receiver { Id = "1", Name = "Maria" }
+            };
 
-            try
-            {
-                parametersRepository.DeleteItem("2");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
-            foreach (var item in parametersRepository.GetAll())
-            {
-                Console.WriteLine(item.Id);
-               
-            }
+            IRepository<Request, string> repository = new RepositoryBase<Request>("repository", "Parameters");
+            repository.AddItem(request);
+            var requestdes = repository.GetAll();
         }
     }
 }

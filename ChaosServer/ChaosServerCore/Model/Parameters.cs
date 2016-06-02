@@ -1,13 +1,26 @@
-﻿namespace ChaosServerCore.Model
+﻿using ChaosServerCore.Controller;
+using System.Xml.Serialization;
+
+namespace ChaosServerCore.Model
 {
+    [XmlRoot ("Parameters")]
     public class Parameters : IIndexable
     {
-        public string Id { get; set; }
-        public double X { get; set; }
-        public double Lambda { get; set; }
-        public int C0 { get; set; }
-        public int T { get; set; }
-        public int A { get; set; }
-        public int B { get; set; }
+        private RandomParameters randome = new RandomParameters();
+
+        [XmlAttribute ("ID")]
+        public string Id { get; set;}
+        [XmlAttribute ("X")]
+        public double X
+        {
+            get { return randome.GenerateXRandomNumber(); }
+            set { }
+        }
+        [XmlAttribute ("Lambda")]
+        public double Lambda
+        {
+            get { return randome.GenerateLambdaRandomNumber(); }
+            set { }
+        }    
     }
 }

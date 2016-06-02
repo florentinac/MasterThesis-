@@ -40,18 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\EncryptParameters.cs" />
+    <Compile Include="Controller\RandomParameters.cs" />
+    <Compile Include="Controller\RequestParameters.cs" />
     <Compile Include="Model\IIndexable.cs" />
     <Compile Include="Model\IRepository.cs" />
     <Compile Include="Model\Parameters.cs" />
     <Compile Include="Model\ParametersRepository.cs" />
-    <Compile Include="Model\RandomNumberHandler.cs" />
+    <Compile Include="Model\Receiver.cs" />
     <Compile Include="Model\RepositoryBase.cs" />
+    <Compile Include="Model\Request.cs" />
+    <Compile Include="Model\Sender.cs" />
     <Compile Include="Model\XmlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controller\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

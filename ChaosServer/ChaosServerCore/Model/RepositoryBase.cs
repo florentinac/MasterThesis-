@@ -5,14 +5,19 @@ using System.Linq;
 
 namespace ChaosServerCore.Model
 {
-    public abstract class RepositoryBase<T> : IRepository<T, string> where T : IIndexable
+    /// <summary>
+    /// Base repository.
+    /// Please note that this class must handle all file/directory exceptions. (I was too lazy, sue me).
+    /// </summary>
+    /// <typeparam name="T">The type that will be stored in the repository.</typeparam>
+    public class RepositoryBase<T> : IRepository<T, string> where T : IIndexable
     {
         protected string baseDirectory;
         protected string repositoryName;
 
         protected string fullPath;
 
-        internal RepositoryBase(string baseDirectory, string repositoryName)
+       public RepositoryBase(string baseDirectory, string repositoryName)
         {
             this.baseDirectory = baseDirectory;
             this.repositoryName = repositoryName;
@@ -24,15 +29,15 @@ namespace ChaosServerCore.Model
         {
             var result = false;
 
-            var key = GenerateKey(item);
-            if (CheckIfKeyAlreadyExists(key))
+            var key = this.GenerateKey(item);
+            if (this.CheckIfKeyAlreadyExists(key))
             {
-                return result;                
+                return result;
             }
 
             item.Id = key;
 
-            using (var fileStream = File.Create(Path.Combine(fullPath, key)))
+            using (var fileStream = File.Create(Path.Combine(this.fullPath, key)))
             using (var writer = new StreamWriter(fileStream))
             {
                 var serializedObject = XmlHelper.Serialize(item);
@@ -41,7 +46,7 @@ namespace ChaosServerCore.Model
             }
 
             return result;
-        }       
+        }        
 
         public bool DeleteItem(string key)
         {
@@ -61,11 +66,10 @@ namespace ChaosServerCore.Model
         public IEnumerable<T> GetAll()
         {
             var result = new List<T>();
-            var items = new DirectoryInfo(fullPath).GetFiles();
-
+            var items = new DirectoryInfo(this.fullPath).GetFiles();
             foreach(var fileInfo in items)
             {
-                result.Add(GetItem(fileInfo.Name));
+                result.Add(this.GetItem(fileInfo.Name));
             }
 
             return result;
@@ -75,16 +79,15 @@ namespace ChaosServerCore.Model
         {
             T item;
 
-            if (!CheckIfKeyAlreadyExists(key))
+            if (!this.CheckIfKeyAlreadyExists(key))
             {
                 throw new Exception("The key does not exists in the repository!!!");
             }
 
-            using (var fileStream = File.OpenRead(Path.Combine(fullPath, key)))
+            using (var fileStream = File.OpenRead(Path.Combine(this.fullPath, key)))
             using (var reader = new StreamReader(fileStream))
             {
                 var serializedObject = reader.ReadToEnd();
-
                 item = XmlHelper.Deserialize<T>(serializedObject);
                 item.Id = key;
             }
@@ -100,28 +103,40 @@ namespace ChaosServerCore.Model
             {
                 throw new Exception("The key does not exists in the repository!!!");
             }
-           
-            using (var writer = new StreamWriter(Path.Combine(fullPath,key))) 
+
+            using (var writer = new StreamWriter(Path.Combine(fullPath, key)))
             {
                 var serializedObject = XmlHelper.Serialize(item);
                 writer.Write(serializedObject);
                 result = true;
             }
-
             return result;
         }
 
-        protected abstract string GenerateKey(T item);
-   
-        private bool CheckIfKeyAlreadyExists(string key)
+        protected virtual string GenerateKey(T item)
         {
-            return new DirectoryInfo(fullPath).GetFiles().Any(k => k.Name == key);
+            var maxKey = 0;
+
+            var numbarOfFiles = new DirectoryInfo(this.fullPath).GetFiles();
+
+            if (numbarOfFiles.Length != 0)
+            {
+                maxKey = numbarOfFiles.Select(p => int.Parse(p.Name)).Max();
+                maxKey++;
+            }
+
+            return maxKey.ToString();
+        }
+
+        protected bool CheckIfKeyAlreadyExists(string key)
+        {
+            return new DirectoryInfo(this.fullPath).GetFiles().Any(k => k.Name == key);
         }
 
         private void InitializeRepository()
         {
-            fullPath = Path.Combine(baseDirectory, repositoryName);
-            Directory.CreateDirectory(fullPath);
+            this.fullPath = Path.Combine(this.baseDirectory, this.repositoryName);
+            Directory.CreateDirectory(this.fullPath);
         }
     }
 }

@@ -12,15 +12,15 @@ namespace ChaosServerCore.Model
         protected override string GenerateKey(Parameters item)
         {
             var maxKey = 0;
-          
+
             var numbarOfFiles = new DirectoryInfo(base.fullPath).GetFiles();
 
             if (numbarOfFiles.Length != 0)
             {
                 maxKey = numbarOfFiles.Select(p => int.Parse(p.Name)).Max();
-                maxKey++;                
+                maxKey++;
             }
-                       
+
             return maxKey.ToString();
         }
     }

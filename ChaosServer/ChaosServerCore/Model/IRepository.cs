@@ -12,6 +12,6 @@ namespace ChaosServerCore.Model
 
         bool UpdateItem(U key, T item);
 
-        bool DeleteItem(U key);
+        bool DeleteItem(U item);
     }
 }
